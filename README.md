@@ -90,8 +90,17 @@ php artisan migrate --seed
 php artisan storage:link
 npm ci --ignore-scripts
 npm run build
-php artisan serve --host=127.0.0.1 --port=8000
 ```
+
+**Pada komputer Windows ini**, jalankan dari terminal VS Code:
+
+```powershell
+.\start-local.bat
+```
+
+Launcher menyalakan MariaDB praktik di port `3307`, menunggu database siap, lalu menyalakan web server jika belum berjalan. Jika web server sudah aktif, launcher memulihkan database tanpa membuat web server kedua. Jalankan kembali perintah ini setelah restart komputer. Database dan `.env` lokal tetap disimpan di komputer ini.
+
+Untuk instalasi lain yang memakai MySQL/MariaDB tersendiri, pastikan layanan database sesuai `.env` sudah berjalan, lalu jalankan `php artisan serve --host=127.0.0.1 --port=8000`. Perintah `php artisan serve` sendiri hanya menyalakan web server, bukan database.
 
 Buka `http://127.0.0.1:8000`. Untuk pengembangan aset, jalankan `npm run dev` di terminal terpisah. Aset production dibuat melalui `npm run build`.
 
