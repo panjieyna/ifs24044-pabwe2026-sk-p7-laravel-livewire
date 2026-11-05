@@ -12,7 +12,6 @@ pipeline {
     environment {
         COMPOSER_ALLOW_SUPERUSER = '1'
         COMPOSER_NO_INTERACTION = '1'
-        XDEBUG_MODE = 'coverage'
     }
 
     stages {
@@ -299,7 +298,6 @@ pipeline {
                         --skip-dirs vendor \
                         --skip-dirs node_modules \
                         --skip-dirs coverage-html \
-                        --skip-dirs .qa \
                         --skip-dirs storage \
                         --skip-dirs bootstrap/cache \
                         --format sarif \
@@ -362,18 +360,6 @@ pipeline {
                         -x "node_modules/*" \
                         -x ".git/*" \
                         -x ".env" \
-                        -x ".env.*" \
-                        -x ".qa/*" \
-                        -x ".codex/*" \
-                        -x ".cursor/*" \
-                        -x ".idea/*" \
-                        -x ".vscode/*" \
-                        -x ".phpunit.cache/*" \
-                        -x ".phpunit.result.cache" \
-                        -x "coverage-*" \
-                        -x "junit.xml" \
-                        -x "events.txt" \
-                        -x "phpunit_*.txt" \
                         -x ".env.backup" \
                         -x ".env.production" \
                         -x ".env.local" \
@@ -386,16 +372,12 @@ pipeline {
                         -x "trivy-results.sarif" \
                         -x ".docs/*" \
                         -x "tests/*" \
-                        -x "storage/app/*" \
-                        -x "public/storage/*" \
                         -x "storage/logs/*" \
                         -x "storage/framework/cache/data/*" \
                         -x "storage/framework/sessions/*" \
                         -x "storage/framework/views/*" \
                         -x "storage/framework/testing/*" \
                         -x "bootstrap/cache/*.php"
-
-                    zip -q latest-app.zip .env.example
 
                     echo "=== Application Package Created ==="
 
@@ -653,11 +635,6 @@ pipeline {
                         // OTHER STATUS
                         // ==================================================
 
-                        if (!(deploymentStatus in ['IN_PROGRESS', 'PENDING', 'QUEUED', 'PROCESSING', 'RUNNING', 'DEPLOYING'])) {
-                            error("Status deployment tidak dikenal: ${deploymentStatus}")
-                        }
-
-                        deploymentStatus = 'IN_PROGRESS'
                         echo "Deployment masih berjalan..."
                     }
 
