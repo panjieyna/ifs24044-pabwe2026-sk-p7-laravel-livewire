@@ -163,6 +163,23 @@ Jenkins memeriksa Clover dan menggagalkan build jika coverage statements, method
 
 ## Deployment dan Jenkins
 
+Untuk **audit HTTPS lokal di Windows**, alamat yang dipakai adalah:
+
+```text
+https://ifs24044-pabwe2026-sk-p7-laravel-livewire
+```
+
+Jalankan setup satu kali dari folder proyek, lalu jalankan server HTTPS:
+
+```powershell
+.\setup-local-https.bat
+.\start-https.bat
+```
+
+Setup membuat sertifikat lokal baru, memasukkan CA lokal ke trust store pengguna Windows, dan menambahkan satu entri hostname ke file `hosts`. Windows meminta izin Administrator untuk perubahan `hosts`. Sertifikat, private key, konfigurasi Apache, dan log disimpan di `.qa/https/` yang diabaikan Git; jangan menyalinnya ke repository. `.env` lokal disesuaikan ke alamat HTTPS tersebut.
+
+Launcher HTTPS menggunakan Apache XAMPP dengan konfigurasi terpisah dan modul PHP dari instalasi PHP aktif. Database lokal tetap memakai data yang sudah ada. Server hanya mendengarkan `127.0.0.1:443`; konfigurasi Apache global tidak diubah. Setelah restart komputer, jalankan kembali `start-https.bat`. Alamat ini hanya tersedia pada komputer yang menjalankan setup tersebut; publikasi internet memerlukan domain dan server hosting tersendiri.
+
 Konfigurasi production wajib memakai hostname yang telah ditentukan:
 
 ```dotenv
