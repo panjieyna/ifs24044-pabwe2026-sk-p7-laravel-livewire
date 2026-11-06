@@ -12,7 +12,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body x-data="{ sidebarOpen: false, wide: window.innerWidth >= 1024 }" @resize.window.debounce="wide = window.innerWidth >= 1024; if (wide) sidebarOpen = false" @keydown.escape.window="sidebarOpen = false" class="bg-stone-50 text-slate-800 antialiased">
+<body x-data="{ sidebarOpen: false, wide: window.innerWidth >= 1024 }" @resize.window.debounce="wide = window.innerWidth >= 1024; if (wide) sidebarOpen = false" @keydown.escape.window="sidebarOpen = false" class="bg-stone-50 text-slate-800 antialiased {{ request()->routeIs('login') ? 'login-page' : '' }}">
     <a class="skip-link" href="#main-content">Lewati ke konten utama</a>
     @auth
         <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false" class="fixed inset-0 z-30 bg-slate-950/50 lg:hidden"></div>
@@ -50,10 +50,14 @@
             <footer class="px-6 pb-6 text-center text-xs text-slate-500">Ruang Stok <span aria-hidden="true">·</span> PABWE 2026</footer>
         </div>
     @else
-        <main id="main-content" class="min-h-screen flex flex-col items-center justify-center p-5 sm:p-10">
-            <a href="{{ route('home') }}" class="mb-8 text-2xl font-bold tracking-tight text-emerald-950">ruang<span class="font-normal">stok.</span></a>
+        <main id="main-content" @class(['login-page-main' => request()->routeIs('login'), 'min-h-screen flex flex-col items-center justify-center p-5 sm:p-10' => !request()->routeIs('login')])>
+            @unless(request()->routeIs('login'))
+                <a href="{{ route('home') }}" class="mb-8 text-2xl font-bold tracking-tight text-emerald-950">ruang<span class="font-normal">stok.</span></a>
+            @endunless
             {{ $slot }}
-            <p class="mt-8 text-xs text-slate-500">Inventaris tertata. Aktivitas lebih bermakna.</p>
+            @unless(request()->routeIs('login'))
+                <p class="mt-8 text-xs text-slate-500">Inventaris tertata. Aktivitas lebih bermakna.</p>
+            @endunless
         </main>
     @endauth
     @livewireScripts

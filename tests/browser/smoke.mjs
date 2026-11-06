@@ -30,6 +30,28 @@ async function login(username, password) {
 
 try {
     await page.goto(base + '/login');
+    const loginPassword = page.locator('#login-password');
+    const passwordToggle = page.locator('#login-password-toggle');
+    const previewPassword = 'Password preview 123!';
+    assert.equal(await loginPassword.getAttribute('type'), 'password');
+    assert.equal(await passwordToggle.getAttribute('type'), 'button');
+    assert.equal(await passwordToggle.getAttribute('aria-controls'), 'login-password');
+    assert.equal(await passwordToggle.getAttribute('aria-pressed'), 'false');
+    assert.equal(await page.getByRole('button', { name: 'Tampilkan password', exact: true }).count(), 1);
+    await loginPassword.fill(previewPassword);
+    await passwordToggle.click();
+    assert.equal(await loginPassword.getAttribute('type'), 'text');
+    assert.equal(await loginPassword.inputValue(), previewPassword);
+    assert.equal(await passwordToggle.getAttribute('aria-pressed'), 'true');
+    assert.equal(await page.getByRole('button', { name: 'Sembunyikan password', exact: true }).count(), 1);
+    assert.equal(new URL(page.url()).pathname, '/login');
+    await passwordToggle.focus();
+    await page.keyboard.press('Space');
+    assert.equal(await loginPassword.getAttribute('type'), 'password');
+    assert.equal(await loginPassword.inputValue(), previewPassword);
+    assert.equal(await passwordToggle.getAttribute('aria-pressed'), 'false');
+    assert.equal(new URL(page.url()).pathname, '/login');
+    await loginPassword.fill('');
     await audit('login');
     await page.goto(base + '/register');
     await audit('register');

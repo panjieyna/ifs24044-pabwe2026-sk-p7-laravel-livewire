@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 use Tests\TestCase;
 
@@ -104,6 +105,81 @@ class ProfileServiceTest extends TestCase
         $dimensions = getimagesizefromstring(Storage::disk('public')->get($path));
         $this->assertSame([400, 400], array_slice($dimensions, 0, 2));
         Storage::disk('public')->assertMissing('profile-photos/old.png');
+    }
+
+    /**
+     * @param  list<array{int, int, int}>  $expectedCorners
+     */
+    #[DataProvider('jpegOrientations')]
+    public function test_profile_photo_respects_jpeg_orientation(?int $orientation, array $expectedCorners): void
+    {
+        $user = User::factory()->create();
+
+        $path = $this->service->updateProfilePhoto($user, $this->quadrantJpeg($orientation));
+
+        Storage::disk('public')->assertExists($path);
+        $this->assertSame($path, $user->fresh()->profile_photo_path);
+        $binary = Storage::disk('public')->get($path);
+        $dimensions = getimagesizefromstring($binary);
+        $this->assertSame([400, 400, IMAGETYPE_PNG], array_slice($dimensions, 0, 3));
+
+        $image = imagecreatefromstring($binary);
+        foreach ([[40, 40], [360, 40], [40, 360], [360, 360]] as $corner => [$x, $y]) {
+            $color = imagecolorsforindex($image, imagecolorat($image, $x, $y));
+            foreach (['red', 'green', 'blue'] as $channel => $name) {
+                $this->assertEqualsWithDelta(
+                    $expectedCorners[$corner][$channel],
+                    $color[$name],
+                    8,
+                    "Unexpected {$name} channel at corner {$corner} for orientation ".($orientation ?? 'absent'),
+                );
+            }
+        }
+    }
+
+    /**
+     * @return array<string, array{?int, list<array{int, int, int}>}>
+     */
+    public static function jpegOrientations(): array
+    {
+        $red = [255, 0, 0];
+        $green = [0, 255, 0];
+        $blue = [0, 0, 255];
+        $yellow = [255, 255, 0];
+
+        return [
+            'no EXIF orientation' => [null, [$red, $green, $blue, $yellow]],
+            'normal' => [1, [$red, $green, $blue, $yellow]],
+            'mirrored horizontally' => [2, [$green, $red, $yellow, $blue]],
+            'rotated 180 degrees' => [3, [$yellow, $blue, $green, $red]],
+            'mirrored vertically' => [4, [$blue, $yellow, $red, $green]],
+            'transposed' => [5, [$red, $blue, $green, $yellow]],
+            'rotated 90 degrees clockwise' => [6, [$blue, $red, $yellow, $green]],
+            'transversed' => [7, [$yellow, $green, $blue, $red]],
+            'rotated 90 degrees counterclockwise' => [8, [$green, $yellow, $red, $blue]],
+        ];
+    }
+
+    private function quadrantJpeg(?int $orientation): string
+    {
+        $image = imagecreatetruecolor(200, 120);
+        imagefilledrectangle($image, 0, 0, 99, 59, imagecolorallocate($image, 255, 0, 0));
+        imagefilledrectangle($image, 100, 0, 199, 59, imagecolorallocate($image, 0, 255, 0));
+        imagefilledrectangle($image, 0, 60, 99, 119, imagecolorallocate($image, 0, 0, 255));
+        imagefilledrectangle($image, 100, 60, 199, 119, imagecolorallocate($image, 255, 255, 0));
+        ob_start();
+        imagejpeg($image, null, 100);
+        $binary = ob_get_clean();
+
+        if ($orientation === null) {
+            return $binary;
+        }
+
+        $metadata = "Exif\0\0II".pack('v', 42).pack('V', 8)
+            .pack('v', 1).pack('vvV', 0x0112, 3, 1)
+            .pack('v', $orientation)."\0\0".pack('V', 0);
+
+        return substr($binary, 0, 2)."\xFF\xE1".pack('n', strlen($metadata) + 2).$metadata.substr($binary, 2);
     }
 
     public function test_profile_service_does_not_read_filesystem_paths(): void

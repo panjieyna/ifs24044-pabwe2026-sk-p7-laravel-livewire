@@ -3,6 +3,7 @@
 namespace App\Features\Profile\Services;
 
 use App\Models\User;
+use GdImage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -62,6 +63,8 @@ class ProfileService
             throw new RuntimeException('Format gambar tidak valid atau tidak didukung.');
         }
 
+        $sourceImage = $this->normalizeImageOrientation($sourceImage, $binary, $dimensions[2]);
+
         $origWidth = imagesx($sourceImage);
         $origHeight = imagesy($sourceImage);
 
@@ -103,6 +106,43 @@ class ProfileService
         $user->update(['profile_photo_path' => $filename]);
 
         return $filename;
+    }
+
+    /**
+     * Apply camera orientation before the image is re-encoded without EXIF metadata.
+     */
+    private function normalizeImageOrientation(GdImage $image, string $binary, int $imageType): GdImage
+    {
+        if ($imageType !== IMAGETYPE_JPEG) {
+            return $image;
+        }
+
+        $stream = fopen('php://memory', 'w+b');
+        try {
+            fwrite($stream, $binary);
+            rewind($stream);
+            $metadata = @exif_read_data($stream);
+        } finally {
+            fclose($stream);
+        }
+
+        $orientation = (int) ($metadata['Orientation'] ?? 1);
+
+        if (in_array($orientation, [2, 5, 7], true)) {
+            imageflip($image, IMG_FLIP_HORIZONTAL);
+        }
+        if ($orientation === 4) {
+            imageflip($image, IMG_FLIP_VERTICAL);
+        }
+
+        $rotation = match ($orientation) {
+            3 => 180,
+            5, 8 => 90,
+            6, 7 => -90,
+            default => 0,
+        };
+
+        return $rotation === 0 ? $image : imagerotate($image, $rotation, 0);
     }
 
     /**
