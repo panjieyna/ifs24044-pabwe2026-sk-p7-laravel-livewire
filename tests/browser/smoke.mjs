@@ -54,6 +54,39 @@ try {
     await loginPassword.fill('');
     await audit('login');
     await page.goto(base + '/register');
+    const registerPassword = page.locator('#password');
+    const registerConfirmation = page.locator('#password_confirmation');
+    await registerPassword.fill(previewPassword);
+    await registerConfirmation.fill(previewPassword);
+    for (const field of [
+        { input: registerPassword, other: registerConfirmation, toggle: '#register-password-toggle', control: 'password', label: 'password' },
+        { input: registerConfirmation, other: registerPassword, toggle: '#register-confirmation-toggle', control: 'password_confirmation', label: 'konfirmasi password' },
+    ]) {
+        const toggle = page.locator(field.toggle);
+        assert.equal(await field.input.getAttribute('type'), 'password');
+        assert.equal(await field.other.getAttribute('type'), 'password');
+        assert.equal(await toggle.getAttribute('type'), 'button');
+        assert.equal(await toggle.getAttribute('aria-controls'), field.control);
+        assert.equal(await toggle.getAttribute('aria-pressed'), 'false');
+        assert.equal(await page.getByRole('button', { name: `Tampilkan ${field.label}`, exact: true }).count(), 1);
+        await toggle.click();
+        assert.equal(await field.input.getAttribute('type'), 'text');
+        assert.equal(await field.other.getAttribute('type'), 'password');
+        assert.equal(await field.input.inputValue(), previewPassword);
+        assert.equal(await field.other.inputValue(), previewPassword);
+        assert.equal(await toggle.getAttribute('aria-pressed'), 'true');
+        assert.equal(await page.getByRole('button', { name: `Sembunyikan ${field.label}`, exact: true }).count(), 1);
+        assert.equal(new URL(page.url()).pathname, '/register');
+        await toggle.focus();
+        await page.keyboard.press('Space');
+        assert.equal(await field.input.getAttribute('type'), 'password');
+        assert.equal(await field.other.getAttribute('type'), 'password');
+        assert.equal(await field.input.inputValue(), previewPassword);
+        assert.equal(await toggle.getAttribute('aria-pressed'), 'false');
+        assert.equal(new URL(page.url()).pathname, '/register');
+    }
+    await registerPassword.fill('');
+    await registerConfirmation.fill('');
     await audit('register');
     await login('member', 'member');
     await page.locator('#stock-search').fill('QA barang ');

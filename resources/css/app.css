@@ -227,6 +227,69 @@
         .login-note { margin-top: 12px; padding-top: 10px; line-height: 1.5; }
         .login-footer { margin-top: 12px; }
     }
+    .register-panel { padding: 32px 44px 24px; }
+    .register-form-content { max-width: 400px; }
+    .register-panel .login-brand { margin-bottom: 20px; }
+    .register-panel .login-heading { margin-bottom: 22px; }
+    .register-form { gap: 14px; }
+    .register-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 14px; }
+    .register-fields > div { min-width: 0; }
+    .register-email-field { grid-column: 1 / -1; }
+    .register-panel .login-input { height: 46px; padding: 10px 14px; }
+    .register-password-field .login-password-input { padding-right: 52px; }
+    .register-password-field .login-password-toggle { top: 1px; right: 1px; }
+    .register-password-help { color: var(--login-muted); font-size: 11px; line-height: 1.6; }
+    .register-panel .login-footer { margin-top: 24px; }
+    @media (min-width: 800px) and (max-width: 1023px) {
+        .register-panel { padding-right: 28px; padding-left: 28px; }
+        .register-fields { gap: 14px 12px; }
+    }
+    @media (max-width: 799px) {
+        .register-panel { padding: 30px 30px 24px; }
+        .register-form-content { max-width: 400px; }
+        .register-panel .login-input { height: 50px; padding-top: 12px; padding-bottom: 12px; font-size: 16px; }
+        .register-password-field .login-password-toggle { top: 3px; right: 3px; }
+    }
+    @media (max-width: 479px) {
+        .register-password-field { grid-column: 1 / -1; }
+        .register-fields { gap: 14px 12px; }
+    }
+    @media (max-width: 359px) {
+        .register-panel { padding-right: 22px; padding-left: 22px; }
+    }
+    @media (max-height: 760px) {
+        .register-panel { padding-top: 26px; padding-bottom: 20px; }
+        .register-panel .login-brand { margin-bottom: 16px; }
+        .register-panel .login-heading { margin-bottom: 20px; }
+        .register-fields { row-gap: 14px; }
+        .register-panel .login-footer { margin-top: 20px; }
+    }
+    @media (max-height: 660px) {
+        .register-panel { padding-top: 22px; padding-bottom: 16px; }
+        .register-panel .login-brand { margin-bottom: 12px; }
+        .register-panel .login-heading { margin-bottom: 16px; }
+        .register-fields { row-gap: 12px; }
+        .register-form { gap: 12px; }
+        .register-panel .login-label { margin-bottom: 6px; }
+        .register-panel .login-footer { margin-top: 16px; }
+    }
+    @media (max-height: 600px) {
+        .register-panel { padding-top: 18px; padding-bottom: 14px; }
+        .register-panel .login-brand { margin-bottom: 10px; }
+        .register-panel .login-heading { margin-bottom: 14px; }
+        .register-fields { row-gap: 10px; }
+        .register-form { gap: 10px; }
+        .register-panel .login-footer { margin-top: 12px; }
+    }
+    @media (max-width: 479px) and (max-height: 660px) {
+        .register-panel { padding-top: 16px; padding-bottom: 12px; }
+        .register-panel .login-brand { margin-bottom: 8px; }
+        .register-panel .login-heading .login-eyebrow { display: none; }
+        .register-panel .login-heading { margin-bottom: 14px; }
+        .register-form { gap: 10px; }
+        .register-fields { row-gap: 10px; }
+        .register-panel .login-footer { margin-top: 12px; }
+    }
 }
 @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; scroll-behavior:auto!important; } }
 .toastui-editor-defaultUI .toastui-editor-tabs .tab-item { color: #334155; }

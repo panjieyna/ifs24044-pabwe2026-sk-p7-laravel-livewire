@@ -1,53 +1,87 @@
-<div class="max-w-md mx-auto my-8">
-    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-        <div class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-slate-900">Buat Akun Member</h1>
-            <p class="text-sm text-slate-500 mt-1">Mulai kelola persediaan dengan akun inventaris pribadi Anda.</p>
+<div class="login-shell register-shell">
+    <aside class="login-story" aria-label="Tentang Ruang Stok" style="background-image: url('{{ asset('images/register-inventory-green.webp') }}')">
+        <div class="login-story-copy">
+            <p class="login-eyebrow">MULAI LEBIH TERATUR</p>
+            <p class="login-story-title">Ruang baru untuk<br><span>persediaan Anda.</span></p>
+            <p class="login-story-description">Daftar dan kelola inventaris dalam satu tempat.</p>
         </div>
+    </aside>
 
-        <form wire:submit.prevent="register" class="space-y-4">
-            <div>
-                <label for="name" class="block text-sm font-medium text-slate-700 mb-1">Nama Lengkap</label>
-                <input wire:model="name" type="text" id="name" autocomplete="name" maxlength="255" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition" placeholder="Nama Anda" required>
-                @error('name') <span role="alert" class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
-            </div>
-
-            <div>
-                <label for="username" class="block text-sm font-medium text-slate-700 mb-1">Username</label>
-                <input wire:model="username" type="text" id="username" autocomplete="username" minlength="3" maxlength="50" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition" placeholder="username_kamu" required>
-                @error('username') <span role="alert" class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
-            </div>
-
-            <div>
-                <label for="email" class="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                <input wire:model="email" type="email" id="email" autocomplete="email" maxlength="255" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition" placeholder="nama@email.com" required>
-                @error('email') <span role="alert" class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
-            </div>
-
-            <div>
-                <label for="password" class="block text-sm font-medium text-slate-700 mb-1">Password</label>
-                <input wire:model="password" type="password" id="password" autocomplete="new-password" minlength="8" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition" placeholder="Minimal 8 karakter" required>
-                @error('password') <span role="alert" class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
-            </div>
-
-            <div>
-                <label for="password_confirmation" class="block text-sm font-medium text-slate-700 mb-1">Konfirmasi Password</label>
-                <input wire:model="password_confirmation" type="password" id="password_confirmation" autocomplete="new-password" minlength="8" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition" placeholder="Ulangi password" required>
-            </div>
-
-            <button type="submit" wire:loading.attr="disabled" class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-75 disabled:cursor-not-allowed text-white font-semibold rounded-lg shadow-sm transition flex items-center justify-center space-x-2">
-                <svg aria-hidden="true" wire:loading wire:target="register" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+    <section class="login-panel register-panel" aria-labelledby="register-heading">
+        <div class="login-form-content register-form-content">
+            <a href="{{ route('home') }}" class="login-brand">
+                <svg width="38" height="38" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+                    <rect width="40" height="40" rx="12" fill="#d9eea4"/>
+                    <path d="m11 14 9-5 9 5v12l-9 5-9-5V14Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                    <path d="m11 14 9 5 9-5M20 19v12m-5-19 9 5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
                 </svg>
-                <span wire:loading.remove wire:target="register">Daftar Akun</span>
-                <span wire:loading wire:target="register">Mendaftarkan...</span>
-            </button>
-        </form>
+                <span>ruang<span>stok.</span></span>
+            </a>
 
-        <div class="mt-6 text-center text-sm text-slate-500">
-            Sudah memiliki akun?
-            <a href="{{ route('login') }}" class="font-semibold text-blue-600 hover:text-blue-700">Masuk di sini</a>
+            <div class="login-heading">
+                <p class="login-eyebrow">MULAI RUANG KERJA ANDA</p>
+                <h1 id="register-heading">Buat Akun Member</h1>
+                <p>Sudah memiliki akun? <a href="{{ route('login') }}">Masuk di sini</a></p>
+            </div>
+
+            <form wire:submit.prevent="register" class="login-form register-form">
+                <div class="register-fields">
+                    <div>
+                        <label for="name" class="login-label">Nama lengkap</label>
+                        <input wire:model="name" type="text" id="name" autocomplete="name" maxlength="255" class="login-input" placeholder="Nama Anda" @error('name') aria-invalid="true" aria-describedby="register-name-error" @enderror required>
+                        @error('name') <span id="register-name-error" role="alert" class="login-error">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <label for="username" class="login-label">Username</label>
+                        <input wire:model="username" type="text" id="username" autocomplete="username" minlength="3" maxlength="50" autocapitalize="none" spellcheck="false" class="login-input" placeholder="Username" @error('username') aria-invalid="true" aria-describedby="register-username-error" @enderror required>
+                        @error('username') <span id="register-username-error" role="alert" class="login-error">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="register-email-field">
+                        <label for="email" class="login-label">Email</label>
+                        <input wire:model="email" type="email" id="email" autocomplete="email" maxlength="255" autocapitalize="none" spellcheck="false" class="login-input" placeholder="nama@email.com" @error('email') aria-invalid="true" aria-describedby="register-email-error" @enderror required>
+                        @error('email') <span id="register-email-error" role="alert" class="login-error">{{ $message }}</span> @enderror
+                    </div>
+
+                    @foreach ([
+                        'password' => ['label' => 'Password', 'placeholder' => 'Minimal 8 karakter', 'toggle' => 'register-password-toggle', 'accessible' => 'password'],
+                        'password_confirmation' => ['label' => 'Konfirmasi password', 'placeholder' => 'Ulangi password', 'toggle' => 'register-confirmation-toggle', 'accessible' => 'konfirmasi password'],
+                    ] as $fieldName => $field)
+                        <div x-data="{ showPassword: false }" class="register-password-field">
+                            <label for="{{ $fieldName }}" class="login-label">{{ $field['label'] }}</label>
+                            <div class="login-input-wrap">
+                                <input wire:model="{{ $fieldName }}" type="password" :type="showPassword ? 'text' : 'password'" id="{{ $fieldName }}" autocomplete="new-password" minlength="8" class="login-input login-password-input" placeholder="{{ $field['placeholder'] }}" @error($fieldName) aria-invalid="true" aria-describedby="register-{{ $fieldName }}-error" @enderror required>
+                                <button id="{{ $field['toggle'] }}" type="button" class="login-password-toggle" @click="showPassword = !showPassword" aria-label="Tampilkan {{ $field['accessible'] }}" :aria-label="showPassword ? 'Sembunyikan {{ $field['accessible'] }}' : 'Tampilkan {{ $field['accessible'] }}'" aria-controls="{{ $fieldName }}" aria-pressed="false" :aria-pressed="showPassword">
+                                    <svg x-show="!showPassword" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" stroke-linejoin="round"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                    <svg x-show="showPassword" x-cloak width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                                        <path d="m3 3 18 18M10.6 5.1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-3.1 4M6.2 6.2A20 20 0 0 0 2 12s3.5 7 10 7a12 12 0 0 0 5.8-1.8M10 10a3 3 0 0 0 4 4" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            @error($fieldName) <span id="register-{{ $fieldName }}-error" role="alert" class="login-error">{{ $message }}</span> @enderror
+                        </div>
+                    @endforeach
+                </div>
+
+                <p class="register-password-help">Gunakan minimal 8 karakter untuk password Anda.</p>
+
+                <button id="register-submit" type="submit" wire:loading.attr="disabled" class="login-submit">
+                    <svg aria-hidden="true" wire:loading wire:target="register" class="animate-spin" width="18" height="18" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v8H4Z"/>
+                    </svg>
+                    <span wire:loading.remove wire:target="register">Daftar Akun</span>
+                    <span wire:loading wire:target="register">Mendaftarkan...</span>
+                    <svg wire:loading.remove wire:target="register" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </form>
         </div>
-    </div>
+        <p class="login-footer">&copy; {{ now()->year }} Ruang Stok <span aria-hidden="true">&middot;</span> Manajemen inventaris</p>
+    </section>
 </div>
